@@ -1,0 +1,44 @@
+/******* Push Notification ******/
+
+								    require_once __DIR__ . '/firebase/firebase.php';
+								    require_once __DIR__ . '/firebase/push.php';
+
+								    $firebase = new Firebase();
+								    $push = new Push();
+
+								    // notification title
+								    $title = "Reply on your question.";
+
+								    // notification message
+								    $message = $response_text;
+
+								    // action 
+								    $action = "AskQuestionActivity";
+
+							 
+							        
+								    $push->setTitle($title);
+								    $push->setMessage($message);
+								       
+								    $push->setIsBackground(FALSE);
+								    $push->setAction($action);
+								        
+
+
+								    $json = '';
+								    $response = '';
+
+							        $json = $push->getPush();
+
+							         	/*$query = "SELECT * FROM blast_ask_questions WHERE ask_question_id = ".$ask_question_id;*/
+
+							        $result = $this->general_model->get_all_table_info_by_id('blast_ask_questions', 'ask_question_id', $ask_question_id);
+
+								    if(isset($result))
+								    {
+								      	$regId = $result->device_token;
+								       	if($regId != NULL)
+								        	$response = $firebase->send($regId, $json);
+								    }
+
+								    /***************** PUSH NOTIFICATION END *****************/
